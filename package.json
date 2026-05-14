@@ -1,0 +1,58 @@
+{
+  "name": "licenseleak",
+  "version": "0.4.0",
+  "description": "License compliance scanner — find AGPL/GPL/SSPL contamination in your codebase before your acquirer does.",
+  "keywords": [
+    "license",
+    "compliance",
+    "agpl",
+    "gpl",
+    "sspl",
+    "spdx",
+    "scanner",
+    "audit",
+    "open-source"
+  ],
+  "homepage": "https://github.com/licenseleak/cli#readme",
+  "bugs": {
+    "url": "https://github.com/licenseleak/cli/issues",
+    "email": "support@licenseleak.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/licenseleak/cli.git"
+  },
+  "license": "Apache-2.0",
+  "author": "LicenseLeak",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "licenseleak": "bin/licenseleak.mjs"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "spdx-snapshot.json",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.17"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start": "node bin/licenseleak.mjs",
+    "refresh-snapshot": "node scripts/refresh-snapshot.mjs",
+    "test": "node --test --import tsx ./src/__tests__/*.test.ts"
+  },
+  "dependencies": {
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "~5.9.2"
+  }
+}
