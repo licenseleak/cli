@@ -1,0 +1,61 @@
+name: CodeQL
+
+# Static application security testing (SAST) via GitHub's CodeQL.
+# Satisfies the OpenSSF Scorecard SAST check and surfaces findings in
+# the repo's Security → Code scanning tab.
+#
+# Runs on every push to main, every PR targeting main, and weekly so
+# new CodeQL queries are exercised against unchanged code.
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  schedule:
+    # Tuesdays at 05:23 UTC (offset from the Scorecard run on Mondays
+    # so we don't double-up on Actions minutes early in the week).
+    - cron: "23 5 * * 2"
+
+permissions: read-all
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      # Required to upload SARIF to the code-scanning dashboard.
+      security-events: write
+      # CodeQL needs to read the source.
+      contents: read
+      # Used by reusable actions in the codeql-action repo.
+      actions: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # The CLI is published as JS but authored in TypeScript. CodeQL's
+        # "javascript-typescript" pack analyzes both in one pass.
+        language: ["javascript-typescript"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@f09c1c0a94de965c15400f5634aa42fac8fb8f88 # v3.27.5
+        with:
+          languages: ${{ matrix.language }}
+          # security-extended adds higher-signal queries beyond the
+          # default set (e.g. taint tracking on more sinks). Worth the
+          # extra ~1 min for a small CLI.
+          queries: security-extended
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@f09c1c0a94de965c15400f5634aa42fac8fb8f88 # v3.27.5
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@f09c1c0a94de965c15400f5634aa42fac8fb8f88 # v3.27.5
+        with:
+          category: "/language:${{ matrix.language }}"

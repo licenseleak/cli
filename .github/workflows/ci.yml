@@ -1,5 +1,11 @@
 name: CI
 
+# Top-level permissions follow the principle of least privilege
+# (Scorecard Token-Permissions check). Individual jobs can request
+# additional scopes if they ever need to write back to the repo, but
+# the default test/build workflow only needs read access.
+permissions: read-all
+
 on:
   push:
     branches: [main]
@@ -20,10 +26,13 @@ jobs:
       matrix:
         node: ["18", "20", "22", "24"]
     steps:
-      - uses: actions/checkout@v4
+      # All third-party (and GitHub-owned) actions are pinned by full
+      # commit SHA per OpenSSF Scorecard Pinned-Dependencies. Tag
+      # comments are informational; bump them via Dependabot.
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Setup Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
           node-version: ${{ matrix.node }}
 
