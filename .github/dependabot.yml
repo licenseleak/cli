@@ -19,12 +19,12 @@ updates:
       prefix: "deps"
       include: "scope"
     groups:
-      # One PR per week for all non-major npm updates
+      # One PR per week for all non-major npm updates.
+      # Major bumps still get their own PR (intentional review).
       npm-minor-and-patch:
         update-types:
           - "minor"
           - "patch"
-      # Major bumps still get their own PR (intentional review)
 
   # GitHub Actions versions in .github/workflows/*.yml
   - package-ecosystem: "github-actions"
